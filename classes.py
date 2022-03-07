@@ -2,15 +2,23 @@ import random
 from scipy.stats import binom
 from collections import Counter
 
+
 class Class:
     def __init__(self, id, capacity, units):
         self.id = id
         self.capacity = capacity
+        self.temp_capacity = self.capacity
         self.units = units
-        self.students = set()
+        self.students = []
+        self.prior_students = []
 
     def __str__(self):
         return f"class {self.id}, capacity {self.capacity}"
+
+    def clear(self):
+        self.temp_capacity = self.capacity
+        self.prior_students.extend(self.students)
+        self.students = []
 
 
 def make_distrib():
@@ -51,7 +59,7 @@ def make_classes():
                 break
         unit += 2
 
-        units.append(unit*cap)
+        units.append(unit * cap)
         ret.append(Class(i, cap, unit))
     return ret
 

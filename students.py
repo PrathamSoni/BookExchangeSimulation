@@ -27,7 +27,7 @@ class Student:
 
 
 def get_class_without_full(classes):
-    out = [c for c in classes if c.capacity > 0]
+    out = [c for c in classes if c.temp_capacity > 0]
     # print(out)
     random.shuffle(out)
     # out.sort(key=lambda x:x.units)
@@ -54,9 +54,8 @@ def make_students(stop):
         students.append(Student(i))
 
     q = 0
+    quarters = get_quarters()
     for year in range(4):
-        quarters = get_quarters()
-
         for q_idx, quarter in enumerate(quarters):
             q += 1
             early_stop = False
@@ -68,8 +67,8 @@ def make_students(stop):
                 for student in r_students:
                     try:
                         c = get_class_without_full(quarter)[0]
-                        c.capacity -= 1
-                        c.students.add(student)
+                        c.temp_capacity -= 1
+                        c.students.append(student)
                         student.classes.append(c)
                         student.units += c.units
                     except:
@@ -82,20 +81,23 @@ def make_students(stop):
 
                 for c in r_classes:
                     r_students = get_nonfull_students(students, c.units)
-                    for i in range(c.capacity):
+                    for i in range(c.temp_capacity):
                         student = r_students[i]
                         student.classes.append(c)
                         student.units += c.units
-                        c.capacity -= 1
-                        c.students.add(student)
+                        c.temp_capacity -= 1
+                        c.students.append(student)
+
+            if year == 3 and q_idx == stop:
+                break
 
             for student in students[:(year + 1) * total_undergrads // 4]:
                 student.move_quarter()
             for student in students[(year + 1) * total_undergrads // 4:]:
                 student.delete_quarter()
 
-            if year == 3 and q_idx == stop:
-                break
+            for c in quarter:
+                c.clear()
 
     return students
 
