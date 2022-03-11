@@ -1,6 +1,6 @@
 import random
 from scipy.stats import binom
-from collections import Counter
+import matplotlib.pyplot as plt
 
 
 class Class:
@@ -24,7 +24,7 @@ class Class:
 def make_distrib():
     distribution = []
     for i in range(477):
-        distribution.append(random.randint(5, 9))
+        distribution.append(random.randint(2, 9))
 
     for i in range(463):
         distribution.append(random.randint(10, 19))
@@ -48,19 +48,21 @@ def make_distrib():
     return distribution
 
 
-def make_classes():
+def make_classes(plot=False):
     distrib = make_distrib()
     ret = []
     units = []
     for i, cap in enumerate(distrib):
         while True:
             unit = binom.rvs(10, .5)
-            if unit <= 3:
+            if 1 <= unit <= 6:
                 break
-        unit += 2
-
-        units.append(unit * cap)
+        units.append(unit)
         ret.append(Class(i, cap, unit))
+
+    if plot:
+        plt.hist(units)
+        plt.show()
     return ret
 
 

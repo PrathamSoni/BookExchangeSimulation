@@ -1,8 +1,4 @@
-import random
-from scipy.stats import binom
-
 from classes import *
-from collections import Counter
 
 total_undergrads = 6366
 
@@ -13,6 +9,9 @@ class Student:
         self.classes = []
         self.past_classes = []
         self.units = 0
+        self.alpha = 0
+        self.donated = 0
+        self.received = 0
 
     def move_quarter(self):
         self.past_classes.extend(self.classes)
@@ -28,23 +27,19 @@ class Student:
 
 def get_class_without_full(classes):
     out = [c for c in classes if c.temp_capacity > 0]
-    # print(out)
     random.shuffle(out)
-    # out.sort(key=lambda x:x.units)
     return out
 
 
 def get_remaining_students(students):
     out = [student for student in students if student.units < 12]
     random.shuffle(out)
-    # out.sort(key=lambda x:x.units)
     return out
 
 
 def get_nonfull_students(students, units):
     out = [student for student in students if student.units + units < 23]
     random.shuffle(out)
-    # out.sort(key=lambda x:x.units)
     return out
 
 
@@ -99,12 +94,7 @@ def make_students(stop):
             for c in quarter:
                 c.clear()
 
-    return students
+    for i in range(total_undergrads):
+        students[i].alpha = random.randint(0, len(students[i].past_classes))
 
-
-# students = make_students(0)
-# print(sorted(Counter([len(s.past_classes + s.classes) for s in students]).items()))
-# students = make_students(1)
-# print(sorted(Counter([len(s.past_classes + s.classes) for s in students]).items()))
-# students = make_students(2)
-# print(sorted(Counter([len(s.past_classes + s.classes) for s in students]).items()))
+    return students, quarter
