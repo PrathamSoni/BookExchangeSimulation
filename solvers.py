@@ -62,8 +62,8 @@ def priority(graph: Graph):
     for node in graph.nodes:
         total_demand += len(node.student.classes)
 
-    donate_queue = [node.student.id for node in graph.nodes]
-    receive_queue = deepcopy(donate_queue)
+    donate_queue = [node.student.id for node in sorted(graph.nodes, key=lambda x: x.student.donated-x.student.received )]
+    receive_queue = deepcopy(donate_queue)[::-1]
 
     while len(receive_queue) > 0 and len(donate_queue) > 0:
         receiver_id = receive_queue.pop(0)
